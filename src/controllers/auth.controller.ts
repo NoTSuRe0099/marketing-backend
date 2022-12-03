@@ -214,11 +214,13 @@ const authController = {
 
     // eslint-disable-next-line @typescript-eslint/no-use-before-define
     const token = await generateToken(`${user?._id}`);
-    const options = {
+
+    return res.status(200).cookie('token', token, {
       expires: new Date(Date.now() + 48 * 60 * 60 * 1000),
+      secure: true,
       httpOnly: true,
-    };
-    return res.status(200).cookie('token', token, options).json({
+      sameSite: 'lax'
+    }).json({
       success: true,
       message: 'Logged in successfully',
     });
@@ -245,7 +247,9 @@ const authController = {
   Logout: asyncError(async (req: Request, res: Response, next: NextFunction) => {
     res.cookie('token', null, {
       expires: new Date(Date.now()),
+      secure: true,
       httpOnly: true,
+      sameSite: 'lax'
     });
 
     res.status(200).json({

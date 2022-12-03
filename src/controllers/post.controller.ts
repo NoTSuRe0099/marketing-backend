@@ -32,33 +32,36 @@ const postController = {
 
     console.log('followerSocketIDS', followerSocketIDS);
 
+    const newPostShape = {
+      _id: result?._id,
+      userId: result?.userId,
+      title: result?.title,
+      description: result?.description,
+      // @ts-ignore
+      createdAt: result?.createdAt,
+      userInfo: {
+        // @ts-ignore
+        email: req?.user?.email,
+        // @ts-ignore
+        username: req?.user?.username,
+        // @ts-ignore
+        avatar: req?.user?.avatar,
+      }
+    };
+
     if (followerSocketIDS?.length > 0) {
       // @ts-ignore
       await req.io.to(followerSocketIDS).emit('NEW_POST', {
         // @ts-ignore
         notificationMsg: `@${req?.user?.username} has created New Post 🖐️`,
-        data: {
-          _id: result?._id,
-          userId: result?.userId,
-          title: result?.title,
-          description: result?.description,
-          // @ts-ignore
-          createdAt: result?.createdAt,
-          userInfo: {
-            // @ts-ignore
-            email: req?.user?.email,
-            // @ts-ignore
-            username: req?.user?.username,
-            // @ts-ignore
-            avatar: req?.user?.avatar,
-          }
-        }
+        data: newPostShape
       });
     }
 
     return res.status(201).json({
       success: true,
-      message: 'New post created'
+      message: 'New post created',
+      data: newPostShape
     });
   }),
 

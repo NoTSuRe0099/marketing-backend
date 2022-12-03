@@ -91,6 +91,7 @@ const authController = {
 
   //* Verify User Email
   verifyUser: asyncError(async (req: Request, res: Response, next: NextFunction) => {
+    console.log('req?.params', req?.params);
     const user = await User?.findOne({ _id: req?.params?.id });
     if (!user) return res?.status(400).json({ success: false, message: 'Invalid link' });
 
@@ -101,7 +102,7 @@ const authController = {
 
     if (!token) return next(new ErrorHandler('Invalid link', 400));
 
-    await User.updateOne({ _id: user?._id, verified: true });
+    await User.findOneAndUpdate({ _id: user?._id, }, { verified: true });
     await token.remove();
 
     return res.status(200).json({ success: true, message: 'Email verified successfully' });

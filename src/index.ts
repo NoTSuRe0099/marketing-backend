@@ -7,6 +7,7 @@ import morgan from 'morgan';
 import cloudinary from 'cloudinary';
 import { Server } from 'socket.io';
 import http from 'http';
+import webpush from 'web-push';
 import ConnectDB from './config/database';
 import PostRoutes from './routes/post.routes';
 import AuthRoutes from './routes/Auth.routes';
@@ -89,6 +90,23 @@ app.get('/', (req, res) => {
 app.use('/api/v1/auth', AuthRoutes);
 app.use('/api/v1/user', UserRoutes);
 app.use('/api/v1/posts', PostRoutes);
+
+//* ****************Push notification Route *******************//
+const publicVapidKey = process.env.WEB_PUSH_PUBLIC_KEY;
+const privateVapidKey = process.env.WEB_PUSH_PRIVATE_KEY;
+webpush.setVapidDetails(
+  'mailto:test@test.com',
+  String(publicVapidKey),
+  String(privateVapidKey)
+);
+app.post('/subscribe', (req, res) => {
+  const { subscription, title, message } = req.body;
+  console.log('comming from client ===>', subscription, title, message);
+  const payload = JSON.stringify({ title, message });
+  webpush.sendNotification(subscription, payload)
+    .catch((err) => console.error('err', err));
+  res.status(200).json({ success: true });
+});
 
 app.use(errorMiddleware);
 

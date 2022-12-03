@@ -219,7 +219,7 @@ const authController = {
       expires: new Date(Date.now() + 48 * 60 * 60 * 1000),
       secure: true,
       httpOnly: true,
-      sameSite: 'lax'
+      sameSite: 'none',
     }).json({
       success: true,
       message: 'Logged in successfully',

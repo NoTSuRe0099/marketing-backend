@@ -117,7 +117,6 @@ const postController = {
           as: 'thePost.userInfo',
         },
       },
-
       {
         $unset: [
           'thePost.userInfo.password',
@@ -126,9 +125,7 @@ const postController = {
           'thePost.userInfo.role'
         ],
       },
-
       { $replaceRoot: { newRoot: '$thePost' } },
-
       {
         $project: {
           _id: 1,

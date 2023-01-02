@@ -20,6 +20,7 @@ const server = http.createServer(app);
 app.use(
   cors({
     origin: [
+      '*',
       'http://localhost:5173',
       'http://localhost:3000',
       'http://192.168.0.102:3000',
